@@ -14,11 +14,11 @@ class ConfigOption implements \JsonSerializable {
     private $Group;
     /**
      * 
-     * @param type $Name
-     * @param type $DefaultValue
-     * @param type $Type
-     * @param type $Description
-     * @param type $Group
+     * @param string $Name
+     * @param $DefaultValue
+     * @param string $Type
+     * @param string $Description
+     * @param string $Group
      * @param int  $InputSize
      */
     public function __construct($Name, $DefaultValue, $Type = 'text', $Description = '', $Group = '', $InputSize = 35)
