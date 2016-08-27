@@ -16,6 +16,11 @@ class CommonRouter extends Common {
         $this->addOpt('VLANs', '1, 2', 'intarray', 'VLANs to create. Format: 1,2,10-20 (spaces allowed)', 'VLAN');
         $this->addOpt('VLANIPs', '10.1.v.1/24', 'text', 'IP address for the VLANs. Format: 192.0.2.1/24. v will be replaced by the VLAN number', 'VLAN');
         $this->addOpt('DHCPOnVLAN', 'all', 'text', 'Set to 0 to disable DHCP on all VLANs, set to "all" to enable DHCP on all VLANs. Format: 1,2,10-20', 'VLAN');
+
+        $DHCPDNSServerOpts[] = new ConfigOption('IP', '195.130.131.139', 'ip');
+
+        $this->addOpt('DHCPScopeDNSServers', $DHCPDNSServerOpts, 'listOfListOfOpts', 'DNS servers the DHCP scope(s) hand out', 'VLAN');
+
         $this->addOpt('GuestVLAN', 0, 'int', 'Set to 0 to not create a guest VLAN', 'VLAN');
         $this->addOpt('InternetUpload', 8000, 'int', 'For Quality of Service, shape upload traffic to this amount, in kilobytes per second.', 'Quality of Service');
         
@@ -132,10 +137,13 @@ class CommonRouter extends Common {
                 $DHCPBlock->addLine("network {$this->getNetAddrFromIP($VLANIP['ip'], $VLANIP['prefix'])} /{$VLANIP['prefix']}");
                 $DHCPBlock->addLine("default-router {$VLANIP['ip']}");
                 $DHCPBlock->addLine("domain-name {$FQDN[1]}");
-                if($this->getOptVal('DNSServer')) {
+                if($this->getOptVal('DNSServer'))
+                {
                     $DHCPBlock->addLine("dns-server {$VLANIP['ip']}");
-                } else {
-                    $DHCPBlock->addLine("dns-server 195.130.131.139 195.130.130.139 195.130.131.11 195.130.130.11");
+                }
+                else
+                {
+                    $DHCPBlock->addLine('dns-server ' . implode(' ', $this->getOptVal('DHCPScopeDNSServers')['IP']));
                 }
             }
             
