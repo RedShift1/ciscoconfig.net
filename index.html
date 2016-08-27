@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Cisco configuration generator</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <script src="ext/jquery.storageapi.js"></script>
+        <script src="js/cisco-confgen.js"></script>
+        <link rel="stylesheet" href="css/style.css" />
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-57222057-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+    </head>
+    <body>
+        <header>
+            <h1>Cisco configuration generator</h1>
+            <div id="menubar">
+                <ul>
+                    <li><a href="">Home</a></li>
+                    <!-- <li><a href="">Feature requests</a></li>
+                    <li><a href="">Site preferences</a></li> -->
+                    <li>
+                        <img src="img/loading.gif" style="vertical-align: middle;" id="statusImage" alt="Loading status" />
+                        <span id="statusText">Processing...</span>
+                    </li>
+                </ul>
+            </div>
+        </header>
+
+        <main>
+            <div id="left">
+                <h2>Select template</h2>
+
+                <ul id="templateList">
+                </ul>
+                <input type="checkbox" id="makeTemplateDefault" />
+                <label for="makeTemplateDefault">Always start with this template when opening this site</label>
+                
+
+                <div id="optionsSection">
+
+                    <h2>Options</h2>
+                    <form id="optionsForm">
+                        <input type="submit" id="generate" value="Generate" />
+                        <div>
+                            <input type="checkbox" id="makedefault" />
+                            <label for="makedefault">Save below settings as default for this template (uses javascript localstorage, saved when you press generate)</label>
+                        </div>
+                        <ul id="options">
+                        </ul>
+                    </form>
+                </div>
+
+            </div>
+
+            <div id="right">
+                <h2>Configuration</h2>
+                <textarea id="config"></textarea>
+
+                <input type="submit" id="selectAll" value="Select all text" />
+                <input type="submit" id="saveAsFile" value="Save as file" onclick="javascript:saveTextAsFile();"/>
+            </div>
+        </main>
+    </body>
+</html>

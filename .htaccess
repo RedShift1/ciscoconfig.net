@@ -1,0 +1,10 @@
+Require all denied
+
+<FilesMatch "^(favicon.ico|json.php|index\.html|error\.html|test.php|)$">
+    Require all granted
+</FilesMatch>
+
+ErrorDocument 403 /error.html?error=403
+ErrorDocument 404 /error.html?error=404
+
+Options -Indexes -FollowSymLinks
