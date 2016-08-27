@@ -21,7 +21,13 @@ class StandaloneAP extends Common {
             "List of SSIDs. A single SSID will be directly bridged with the LAN interface (no VLAN tagging). Multiple SSID's will all be tagged to the LAN interface.");
         
         $this->addOpt('LANInterface', 'GigabitEthernet0', 'string', "LAN interface");
-        
+
+
+        $SNTPOpts[] = new ConfigOption('IP', '193.104.37.238', 'string');
+
+        $this->addOpt('SNTPServers', $SNTPOpts, 'listOfListOfOpts');
+
+
         // Overrides
         $this->setOptDefaultValue('FQDNHostname', 'ap1.lan.local');
     }
@@ -91,15 +97,33 @@ class StandaloneAP extends Common {
         }
         
         $RadioMainInt->addLine('no shutdown');
-        
-        $Block = $this->addBlock("sntp server 194.50.97.12", ConfBlock::POS_NTP, true);
-        $Block->addLine("sntp server 85.234.203.212");
-        
-        
+
+
         $IntBlock = $this->addBlock('interface BVI1', ConfBlock::POS_INT);
         $IntBlock->addLine('ip address dhcp');
         $IntBlock->addLine('no ip proxy-arp');
-        
+
+        $NTPBlock = null;
+
+        if(count($this->getOptVal('SNTPServers')['IP']) > 0)
+        {
+            foreach ($this->getOptVal('SNTPServers')['IP'] as $ntpServer)
+            {
+                if($ntpServer === '')
+                {
+                    continue;
+                }
+                if($NTPBlock === null)
+                {
+                    $NTPBlock = $this->addBlock("sntp server {$ntpServer}", ConfBlock::POS_NTP, true);
+                }
+                else
+                {
+                    $NTPBlock->addLine("sntp server {$ntpServer}");
+                }
+            }
+        }
+
     }
     
     public function validateOpts()

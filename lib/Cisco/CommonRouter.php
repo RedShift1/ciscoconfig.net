@@ -21,7 +21,10 @@ class CommonRouter extends Common {
         
         $this->addOpt('SSHAltPort', 8022, 'int', 'Make SSH also listen on this port. Set to 0 to leave default (22)');
         $this->addOpt('SSHTo22PrivateOnly', true, 'bool', 'Only allow SSH connections to port 22 from private IP ranges');
-        
+
+        $NTPOpts[] = new ConfigOption('IP', '193.104.37.238', 'string');
+
+        $this->addOpt('NTPServers', $NTPOpts, 'listOfListOfOpts');
     }
 
 
@@ -61,9 +64,29 @@ class CommonRouter extends Common {
         $Block = $this->addBlock("ip access-list extended NAT", ConfBlock::POS_IPV4ACL);
         $Block->addLine("deny ip any object-group PrivateRanges");
         $Block->addLine("permit ip any any");
-        
-        $Block = $this->addBlock("ntp server 194.50.97.12", ConfBlock::POS_NTP, true);
-        $Block->addLine("ntp server 85.234.203.212");
+
+
+        $NTPBlock = null;
+
+        if(count($this->getOptVal('NTPServers')['IP']) > 0)
+        {
+            foreach ($this->getOptVal('NTPServers')['IP'] as $ntpServer)
+            {
+                if($ntpServer === '')
+                {
+                    continue;
+                }
+                if($NTPBlock === null)
+                {
+                    $NTPBlock = $this->addBlock("ntp server {$ntpServer}", ConfBlock::POS_NTP, true);
+                }
+                else
+                {
+                    $NTPBlock->addLine("ntp server {$ntpServer}");
+                }
+            }
+        }
+
 
         $Block = $this->addBlock("object-group network PrivateRanges", ConfBlock::POS_OBJGROUP);
         $Block->addLine("192.168.0.0 255.255.0.0");
